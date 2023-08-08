@@ -7,9 +7,11 @@
 		"start": "node index.js"
 	},
 	"dependencies": {
+		"cors": "^2.8.5",
 		"dotenv": "^8.2.0",
 		"express": "^4.16.4",
-		"cors": "^2.8.5"
+		"fix-esm": "^1.0.1",
+		"nanoid": "^4.0.2"
 	},
 	"repository": {
 		"url": "https://github.com/freeCodeCamp/boilerplate-project-exercisetracker"
@@ -18,5 +20,8 @@
 	"keywords": [
 		"node",
 		"express"
-	]
+	],
+	"devDependencies": {
+		"nodemon": "^2.0.22"
+	}
 }
