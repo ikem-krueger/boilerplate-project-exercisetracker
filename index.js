@@ -15,7 +15,7 @@ app.use(express.urlencoded({ extended: true }));
 
 const { customAlphabet } = require('fix-esm').require('nanoid');
 
-const nanoid = customAlphabet("1234567890abcdefghijklmnopqrstuvwxyz", 24);
+const createId = customAlphabet("1234567890abcdefghijklmnopqrstuvwxyz", 24);
 
 /*
   User:
@@ -50,8 +50,38 @@ const nanoid = customAlphabet("1234567890abcdefghijklmnopqrstuvwxyz", 24);
 const users = [];
 const exercises = [];
 
+function createUser(username) {
+  return { _id: createId(), username };
+};
+
+function addUser(user) {
+  users.push(user);
+}
+
 function getUser(id) {
   return users.find(({ _id }) => _id == id);
+}
+
+function getUsers() {
+  return users;
+}
+
+function createExercise(id, description, duration, date) {
+  duration = parseInt(duration);
+  date = date || new Date();
+
+  return { _id: id, description, duration, date };
+}
+
+function addExercise(exercise) {
+  exercises.push(exercise);
+}
+
+function getExercises(id, from="", to="", limit=-1) {
+  const user = getUser(id);
+  const log = createLog(id);
+
+  return { ...user, count: log.length, log };
 }
 
 function createLog(id) {
@@ -63,12 +93,11 @@ function createLog(id) {
  - [x] The returned response from POST /api/users with form data username will be an object with username and _id properties.
 */
 app.post('/api/users', (req, res) => {
-  const _id = nanoid(); // create new id
   const { username } = req.body;
 
-  const user = { _id, username }; // create new user
+  const user = createUser(username);
 
-  users.push(user); // add user to users
+  addUser(user);
 
   res.json(user);
 });
@@ -79,7 +108,7 @@ app.post('/api/users', (req, res) => {
  - [x] Each element in the array returned from GET /api/users is an object literal containing a user's _id and username.
 */
 app.get('/api/users', (req, res) => {
-  res.json(users); // get all users
+  res.json(getUsers());
 });
 
 /*
@@ -88,20 +117,13 @@ app.get('/api/users', (req, res) => {
 */
 app.post('/api/users/:_id/exercises', (req, res) => {
   const { _id } = req.params;
+  const { description, duration, date } = req.body;
 
-  let { description, duration, date } = req.body;
+  const exercise = createExercise(_id, description, duration, date);
 
-  duration = parseInt(duration);
-  date = date || new Date();
+  addExercise(exercise);
 
-  const exercise = { _id, description, duration, date }; // create new exercise
-
-  exercises.push(exercise); // add exercise to exercises
-
-  const user = getUser(_id);
-  const log = createLog(_id);
-
-  res.json({ ...user, count: log.length, log });
+  res.json(getExercises(_id));
 });
 
 /*
@@ -122,10 +144,7 @@ app.post('/api/users/:_id/exercises', (req, res) => {
 app.get('/api/users/:_id/logs', (req, res) => {
   const { _id } = req.params;
 
-  const user = getUser(_id);
-  const log = createLog(_id);
-
-  res.json({ ...user, count: log.length, log });
+  res.json(getExercises(_id));
 });
 
 const listener = app.listen(process.env.PORT || 3000, () => {
