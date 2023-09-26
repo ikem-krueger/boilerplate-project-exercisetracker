@@ -68,7 +68,7 @@ function getUsers() {
 
 function createExercise(id, description, duration, date) {
   duration = parseInt(duration);
-  date = date || new Date().toDateString();
+  date = (date && new Date(date) || new Date()).toDateString();
 
   return { _id: id, description, duration, date };
 }
@@ -132,7 +132,9 @@ app.post('/api/users/:_id/exercises', (req, res) => {
 
   addExercise(exercise);
 
-  res.json(getExercises(_id));
+  const { username } = getUser(_id);
+
+  res.json({ username, ...exercise });
 });
 
 /*
@@ -146,15 +148,19 @@ app.post('/api/users/:_id/exercises', (req, res) => {
  - [x] The duration property of any object in the log array that is returned from GET /api/users/:_id/logs should be a number.
  - [x] The date property of any object in the log array that is returned from GET /api/users/:_id/logs should be a string. Use the dateString format of the Date API.
 
- - [-] You can add from, to and limit parameters to a GET /api/users/:_id/logs request to retrieve part of the log of any user. from and to are dates in yyyy-mm-dd format. limit is an integer of how many logs to send back.
+ - [x] You can add from, to and limit parameters to a GET /api/users/:_id/logs request to retrieve part of the log of any user. from and to are dates in yyyy-mm-dd format. limit is an integer of how many logs to send back.
 
- - [ ] You should provide your own project, not the example URL.
+ - [x] You should provide your own project, not the example URL.
 */
 app.get('/api/users/:_id/logs', (req, res) => {
   const { _id } = req.params;
   const { from, to, limit } = req.query;
 
-  res.json(getExercises(_id, from, to, limit));
+  const exercises = getExercises(_id, from, to, limit);
+
+  console.log(exercises);
+
+  res.json(exercises);
 });
 
 const listener = app.listen(process.env.PORT || 3000, () => {
