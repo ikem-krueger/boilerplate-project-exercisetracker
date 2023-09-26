@@ -81,37 +81,20 @@ function getExercises(id, from = "", to = "", limit = -1) {
   const user = getUser(id);
   let log = createLog(id);
 
-  if (from) {
-    const fromDate = new Date(from);
+  if (from)
+    log = log.filter(({ date }) => new Date(date) >= new Date(from));
 
-    log = log.filter(({ date }) => {
-      const exerciseDate = new Date(date);
+  if (to)
+    log = log.filter(({ date }) => new Date(date) <= new Date(to));
 
-      return exerciseDate >= fromDate;
-    });
-  }
-
-  if (to) {
-    const toDate = new Date(to);
-
-    log = log.filter(({ date }) => {
-      const exerciseDate = new Date(date);
-
-      return exerciseDate <= toDate;
-    });
-  }
-
-  if (limit > 0) {
+  if (limit > 0)
     log = log.slice(0, limit);
-  }
 
   return { ...user, count: log.length, log };
 }
 
 function createLog(id) {
-  return exercises.
-    filter(({ _id }) => _id == id).
-    map(({ description, duration, date }) => ({ description, duration, date }));
+  return exercises.filter(({ _id }) => _id == id).map(({ description, duration, date }) => ({ description, duration, date }));
 }
 
 /*
