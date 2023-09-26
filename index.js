@@ -68,7 +68,7 @@ function getUsers() {
 
 function createExercise(id, description, duration, date) {
   duration = parseInt(duration);
-  date = date || new Date();
+  date = date || new Date().toDateString();
 
   return { _id: id, description, duration, date };
 }
