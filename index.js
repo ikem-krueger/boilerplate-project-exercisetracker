@@ -171,8 +171,6 @@ app.get('/api/users/:_id/logs', (req, res) => {
   const { _id } = req.params;
   const { from, to, limit } = req.query;
 
-  console.log();
-
   res.json(getExercises(_id, from, to, limit));
 });
 
