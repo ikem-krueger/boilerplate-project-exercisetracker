@@ -79,28 +79,30 @@ function addExercise(exercise) {
 
 function getExercises(id, from = "", to = "", limit = -1) {
   const user = getUser(id);
-  const log = createLog(id);
+  let log = createLog(id);
 
   if (from) {
+    const fromDate = new Date(from);
+
     log = log.filter(({ date }) => {
       const exerciseDate = new Date(date);
-      const fromDate = new Date(from);
 
       return exerciseDate >= fromDate;
-    })
+    });
   }
 
   if (to) {
+    const toDate = new Date(to);
+
     log = log.filter(({ date }) => {
       const exerciseDate = new Date(date);
-      const toDate = new Date(to);
 
       return exerciseDate <= toDate;
-    })
+    });
   }
 
   if (limit > 0) {
-    log = log.slice(limit - 1);
+    log = log.slice(0, limit);
   }
 
   return { ...user, count: log.length, log };
@@ -167,8 +169,11 @@ app.post('/api/users/:_id/exercises', (req, res) => {
 */
 app.get('/api/users/:_id/logs', (req, res) => {
   const { _id } = req.params;
+  const { from, to, limit } = req.query;
 
-  res.json(getExercises(_id));
+  console.log();
+
+  res.json(getExercises(_id, from, to, limit));
 });
 
 const listener = app.listen(process.env.PORT || 3000, () => {
