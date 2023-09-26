@@ -13,8 +13,8 @@ app.get('/', (req, res) => {
 
 app.use(express.urlencoded({ extended: true }));
 
-const users = [];
-const exercises = [];
+const users = []; // { _id, username }
+const exercises = []; // { _id, description, duration, date }
 
 const { customAlphabet } = require('fix-esm').require('nanoid');
 
@@ -67,6 +67,7 @@ function createLog(id) {
   return exercises.filter(({ _id }) => _id == id).map(({ description, duration, date }) => ({ description, duration, date }));
 }
 
+// create user
 app.post('/api/users', (req, res) => {
   const { username } = req.body;
 
@@ -77,10 +78,12 @@ app.post('/api/users', (req, res) => {
   res.json(user);
 });
 
+// get users
 app.get('/api/users', (req, res) => {
   res.json(getUsers());
 });
 
+// add exercise
 app.post('/api/users/:_id/exercises', (req, res) => {
   const { _id } = req.params;
   const { description, duration, date } = req.body;
@@ -91,18 +94,15 @@ app.post('/api/users/:_id/exercises', (req, res) => {
 
   const { username } = getUser(_id);
 
-  res.json({ username, ...exercise });
+  res.json({ username, ...exercise }); // as wished
 });
 
+// get exercises
 app.get('/api/users/:_id/logs', (req, res) => {
   const { _id } = req.params;
   const { from, to, limit } = req.query;
 
-  const exercises = getExercises(_id, from, to, limit);
-
-  console.log(exercises);
-
-  res.json(exercises);
+  res.json(getExercises(_id, from, to, limit));
 });
 
 const listener = app.listen(process.env.PORT || 3000, () => {
