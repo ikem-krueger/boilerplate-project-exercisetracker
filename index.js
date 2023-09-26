@@ -81,6 +81,28 @@ function getExercises(id, from="", to="", limit=-1) {
   const user = getUser(id);
   const log = createLog(id);
 
+  if(from) {
+    log = log.filter(({date}) => {
+      const exerciseDate = new Date(date);
+      const fromDate = new Date(from);
+
+      return exerciseDate >= fromDate;
+    })
+  }
+
+  if(to) {
+    log = log.filter(({date}) => {
+      const exerciseDate = new Date(date);
+      const toDate = new Date(to);
+
+      return exerciseDate <= toDate;
+    })
+  }
+
+  if(limit > 0) {
+    log = log.slice(limit - 1);
+  }
+
   return { ...user, count: log.length, log };
 }
 
