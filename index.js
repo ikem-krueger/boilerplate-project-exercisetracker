@@ -77,12 +77,12 @@ function addExercise(exercise) {
   exercises.push(exercise);
 }
 
-function getExercises(id, from="", to="", limit=-1) {
+function getExercises(id, from = "", to = "", limit = -1) {
   const user = getUser(id);
   const log = createLog(id);
 
-  if(from) {
-    log = log.filter(({date}) => {
+  if (from) {
+    log = log.filter(({ date }) => {
       const exerciseDate = new Date(date);
       const fromDate = new Date(from);
 
@@ -90,8 +90,8 @@ function getExercises(id, from="", to="", limit=-1) {
     })
   }
 
-  if(to) {
-    log = log.filter(({date}) => {
+  if (to) {
+    log = log.filter(({ date }) => {
       const exerciseDate = new Date(date);
       const toDate = new Date(to);
 
@@ -99,7 +99,7 @@ function getExercises(id, from="", to="", limit=-1) {
     })
   }
 
-  if(limit > 0) {
+  if (limit > 0) {
     log = log.slice(limit - 1);
   }
 
@@ -107,7 +107,9 @@ function getExercises(id, from="", to="", limit=-1) {
 }
 
 function createLog(id) {
-  return exercises.filter(({ _id }) => _id == id).map(({ description, duration, date }) => ({ description, duration, date }));
+  return exercises.
+    filter(({ _id }) => _id == id).
+    map(({ description, duration, date }) => ({ description, duration, date }));
 }
 
 /*
