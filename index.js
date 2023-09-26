@@ -13,10 +13,6 @@ app.get('/', (req, res) => {
 
 app.use(express.urlencoded({ extended: true }));
 
-const { customAlphabet } = require('fix-esm').require('nanoid');
-
-const createId = customAlphabet("1234567890abcdefghijklmnopqrstuvwxyz", 24);
-
 /*
   User:
 
@@ -49,6 +45,10 @@ const createId = customAlphabet("1234567890abcdefghijklmnopqrstuvwxyz", 24);
 */
 const users = [];
 const exercises = [];
+
+const { customAlphabet } = require('fix-esm').require('nanoid');
+
+const createId = customAlphabet("1234567890abcdefghijklmnopqrstuvwxyz", 24);
 
 function createUser(username) {
   return { _id: createId(), username };
@@ -137,7 +137,7 @@ app.post('/api/users/:_id/exercises', (req, res) => {
  - [x] The duration property of any object in the log array that is returned from GET /api/users/:_id/logs should be a number.
  - [x] The date property of any object in the log array that is returned from GET /api/users/:_id/logs should be a string. Use the dateString format of the Date API.
 
- - [ ] You can add from, to and limit parameters to a GET /api/users/:_id/logs request to retrieve part of the log of any user. from and to are dates in yyyy-mm-dd format. limit is an integer of how many logs to send back.
+ - [-] You can add from, to and limit parameters to a GET /api/users/:_id/logs request to retrieve part of the log of any user. from and to are dates in yyyy-mm-dd format. limit is an integer of how many logs to send back.
 
  - [ ] You should provide your own project, not the example URL.
 */
